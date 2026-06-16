@@ -2,7 +2,7 @@ async function loadAnalytics() {
 
     const response =
         await fetch(
-            "http://localhost:8080/api/analytics"
+            "https://urlshort-jdms.onrender.com/api/analytics"
         );
 
     const urls =

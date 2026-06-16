@@ -10,7 +10,11 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+    origins = {
+        "https://url-shortner-chi-mocha.vercel.app"
+    }
+)
 public class UrlController {
 
     private final UrlService service;

@@ -41,7 +41,7 @@ button.addEventListener(
 
             const response =
                 await fetch(
-                    "http://localhost:8080/api/shorten",
+                    "https://urlshort-jdms.onrender.com/api/shorten",
                     {
                         method: "POST",
                         headers: {
@@ -73,7 +73,7 @@ button.addEventListener(
                 
 
             const shortUrl =
-                `http://localhost:8080/${data.shortCode}`;
+                `https://urlshort-jdms.onrender.com/${data.shortCode}`;
 
             const qrUrl =
                 `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shortUrl)}`;
