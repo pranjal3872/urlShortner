@@ -5,6 +5,7 @@ import urlshortener.model.AnalyticsResponse;
 import urlshortener.model.Url;
 import urlshortener.model.UrlRequest;
 import urlshortener.service.UrlService;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 @RestController
@@ -44,8 +45,14 @@ public class UrlController {
                     );
         }
     }
+    
+    @GetMapping("/analytics")
+    public List<Url> getAllAnalytics() {
+        return service.getAllUrls();
+    }
 
     @GetMapping("/analytics/{shortCode}")
+    
     public AnalyticsResponse getAnalytics(
             @PathVariable String shortCode) {
 

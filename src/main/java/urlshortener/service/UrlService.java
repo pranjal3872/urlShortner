@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import urlshortener.model.Url;
 import urlshortener.repository.UrlRepository;
-
+import java.util.List;
 @Service
 public class UrlService {
 
@@ -96,6 +96,23 @@ public class UrlService {
 
     public Url save(Url url) {
         return repository.save(url);
+    }
+
+    public List<Url> getAllUrls() {
+        return repository.findAll();
+    }
+
+    public List<Url> getTopUrls() {
+
+        return repository.findAll()
+                .stream()
+                .sorted(
+                    (a,b) ->
+                        b.getClickCount()
+                        - a.getClickCount()
+                )
+                .limit(10)
+                .toList();
     }
 }
 

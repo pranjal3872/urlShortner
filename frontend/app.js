@@ -75,6 +75,9 @@ button.addEventListener(
             const shortUrl =
                 `http://localhost:8080/${data.shortCode}`;
 
+            const qrUrl =
+                `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shortUrl)}`;
+
             resultDiv.innerHTML = `
                 <p>
                     Short URL:
@@ -82,6 +85,12 @@ button.addEventListener(
                         ${shortUrl}
                     </a>
                 </p>
+
+                <img
+                    src="${qrUrl}"
+                    alt="QR Code">
+
+                <br><br>
 
                 <button id="copyBtn">
                     Copy URL
