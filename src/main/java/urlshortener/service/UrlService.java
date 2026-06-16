@@ -1,9 +1,8 @@
 package urlshortener.service;
 
 import java.util.Random;
-
 import org.springframework.stereotype.Service;
-
+import java.net.URI;
 import urlshortener.model.Url;
 import urlshortener.repository.UrlRepository;
 
@@ -12,15 +11,60 @@ public class UrlService {
 
     private final UrlRepository repository;
 
+    private boolean isValidUrl(String url) {
+
+        try {
+
+            URI uri = new URI(url);
+
+            return uri.getScheme() != null
+                    && (uri.getScheme().equals("http")
+                    || uri.getScheme().equals("https"));
+
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
     public UrlService(UrlRepository repository) {
         this.repository = repository;
     }
 
-    public Url createShortUrl(String originalUrl) {
+    public Url createShortUrl(
+            String originalUrl,
+            String alias) {
 
-        String shortCode = generateCode();
+        if (!isValidUrl(originalUrl)) {
+            throw new RuntimeException(
+                    "Invalid URL"
+            );
+        }
 
-        Url url = new Url(shortCode, originalUrl);
+        String shortCode;
+
+        if (alias != null &&
+            !alias.isBlank()) {
+
+            if (repository.existsByShortCode(alias)) {
+
+                throw new RuntimeException(
+                        "Alias already exists"
+                );
+            }
+
+            shortCode = alias;
+
+        } else {
+
+            shortCode = generateCode();
+        }
+
+        Url url =
+                new Url(
+                        shortCode,
+                        originalUrl
+                );
 
         return repository.save(url);
     }

@@ -1,9 +1,12 @@
 package urlshortener.controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import urlshortener.model.AnalyticsResponse;
 import urlshortener.model.Url;
 import urlshortener.model.UrlRequest;
 import urlshortener.service.UrlService;
+import java.util.Map;
+import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
@@ -16,12 +19,30 @@ public class UrlController {
     }
 
     @PostMapping("/shorten")
-    public Url shortenUrl(
+    public ResponseEntity<?> shortenUrl(
             @RequestBody UrlRequest request) {
 
-        return service.createShortUrl(
-                request.getUrl()
-        );
+        try {
+
+            Url url =
+                    service.createShortUrl(
+                            request.getUrl(),
+                            request.getAlias()
+                    );
+
+            return ResponseEntity.ok(url);
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            Map.of(
+                                    "message",
+                                    e.getMessage()
+                            )
+                    );
+        }
     }
 
     @GetMapping("/analytics/{shortCode}")

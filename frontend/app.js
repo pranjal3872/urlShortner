@@ -8,64 +8,120 @@ button.addEventListener(
         const url =
             document.getElementById(
                 "urlInput"
-            ).value;
+            ).value.trim();
 
-        const response =
-            await fetch(
-                "http://localhost:8080/api/shorten",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body: JSON.stringify({
-                        url: url
-                    })
-                }
+        const resultDiv =
+            document.getElementById(
+                "result"
             );
 
-        const data =
-            await response.json();
+        const alias =
+            document.getElementById(
+                "aliasInput"
+            ).value.trim();
 
-        const shortUrl =
-            `http://localhost:8080/${data.shortCode}`;
+        // Clear previous result
+        resultDiv.innerHTML = "";
 
-        document.getElementById("result").innerHTML = `
-            <p>
-                Short URL:
-                <a href="${shortUrl}" target="_blank">
-                    ${shortUrl}
-                </a>
-            </p>
+        // URL Validation
+        try {
+            new URL(url);
+        } catch {
 
-            <button id="copyBtn">
-                Copy URL
-            </button>
-        `;
+            resultDiv.innerHTML = `
+                <p style="color:red">
+                    Please enter a valid URL
+                </p>
+            `;
 
-        document
-        .getElementById("copyBtn")
-        .addEventListener(
-            "click",
-            () => {
+            return;
+        }
 
-                navigator.clipboard.writeText(
-                    shortUrl
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:8080/api/shorten",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({
+                            url: url,
+                            alias: alias
+                        })
+                    }
+                );
+                if (!response.ok) {
+
+                    const errorData =
+                        await response.json();
+
+                    resultDiv.innerHTML = `
+                        <p style="color:red">
+                            ${errorData.message}
+                        </p>
+                    `;
+
+                    return;
+                }
+
+            const data =
+                await response.json();
+                
+
+            const shortUrl =
+                `http://localhost:8080/${data.shortCode}`;
+
+            resultDiv.innerHTML = `
+                <p>
+                    Short URL:
+                    <a href="${shortUrl}" target="_blank">
+                        ${shortUrl}
+                    </a>
+                </p>
+
+                <button id="copyBtn">
+                    Copy URL
+                </button>
+            `;
+
+            document
+                .getElementById("copyBtn")
+                .addEventListener(
+                    "click",
+                    () => {
+
+                        navigator.clipboard.writeText(
+                            shortUrl
+                        );
+
+                        document.getElementById(
+                            "copyBtn"
+                        ).innerText = "Copied!";
+
+                        setTimeout(() => {
+
+                            document.getElementById(
+                                "copyBtn"
+                            ).innerText = "Copy URL";
+
+                        }, 2000);
+                    }
                 );
 
-                document.getElementById(
-                    "copyBtn"
-                ).innerText = "Copied!";
+        } catch (error) {
 
-                setTimeout(() => {
+            resultDiv.innerHTML = `
+                <p style="color:red">
+                    Failed to shorten URL.
+                    Please try again.
+                </p>
+            `;
 
-                    document.getElementById(
-                        "copyBtn"
-                    ).innerText = "Copy URL";
-
-                }, 2000);
-            }
-        );
+            console.error(error);
+        }
     }
 );
