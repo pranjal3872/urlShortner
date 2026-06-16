@@ -4,9 +4,9 @@ import urlshortener.model.AnalyticsResponse;
 import urlshortener.model.Url;
 import urlshortener.model.UrlRequest;
 import urlshortener.service.UrlService;
-
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class UrlController {
 
     private final UrlService service;
