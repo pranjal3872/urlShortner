@@ -2,7 +2,6 @@ package urlshortener.service;
 
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import urlshortener.model.Url;
@@ -11,8 +10,11 @@ import urlshortener.repository.UrlRepository;
 @Service
 public class UrlService {
 
-    @Autowired
-    private UrlRepository repository;
+    private final UrlRepository repository;
+
+    public UrlService(UrlRepository repository) {
+        this.repository = repository;
+    }
 
     public Url createShortUrl(String originalUrl) {
 
@@ -43,4 +45,13 @@ public class UrlService {
 
         return code.toString();
     }
+
+    public Url getByShortCode(String shortCode) {
+        return repository.findByShortCode(shortCode);
+    }
+
+    public Url save(Url url) {
+        return repository.save(url);
+    }
 }
+
